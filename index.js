@@ -50,6 +50,7 @@ function processRamlObj (ramlObj, config) {
       ramlObj.css = data[0]
       ramlObj.logo = data[1]
       ramlObj.rootTemplateMarkdown = data[2]
+      ramlObj.rootTemplateData = config.rootTemplateData
       ramlObj.logoMime = getMimeType(config.logoPath)
       ramlObj.languageTabs = config.languageTabs.length > 1 ? config.languageTabs : undefined
       ramlObj.search = true
@@ -145,6 +146,7 @@ function configureTheme (args) {
   const colorThemePath = args['color-theme'] || DEFAULT_COLOR_THEME
   const languageTabs = validateLanguageTabs(args['language-tabs'] || DEFAULT_LANGUAGE_TABS)
   const rootTemplate = args['root-template']
+  const rootTemplateData = args['root-template-data']
 
   return {
     colorThemePath,
@@ -152,7 +154,8 @@ function configureTheme (args) {
     logoPath,
     rootTemplate,
     processRamlObj,
-    postProcessHtml
+    postProcessHtml,
+    rootTemplateData
   }
 }
 
