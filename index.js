@@ -43,11 +43,13 @@ marked.setOptions({renderer: mdRenderer})
 function processRamlObj (ramlObj, config) {
   return Promise.all([
     renderCss(templatesPath, config.colorThemePath),
-    loadLogo(config.logoPath)
+    loadLogo(config.logoPath),
+    readRootTemplate(config.rootTemplate)
   ])
     .then((data) => {
       ramlObj.css = data[0]
       ramlObj.logo = data[1]
+      ramlObj.rootTemplateMarkdown = data[2]
       ramlObj.logoMime = getMimeType(config.logoPath)
       ramlObj.languageTabs = config.languageTabs.length > 1 ? config.languageTabs : undefined
       ramlObj.search = true
@@ -86,6 +88,12 @@ function loadLogo (logoPath) {
   return readFile(logoPath).then((buffer) => buffer.toString('base64'))
 }
 
+function readRootTemplate(path) {
+  if (path) {
+    return readFile(path).then((buffer) => buffer.toString('utf-8'))
+  }
+}
+
 /**
  * Render the ramlObj into the nunjucks template and return the resulting
  * HTML as a string
@@ -94,7 +102,6 @@ function loadLogo (logoPath) {
  * @return {string}          The final HTML
  */
 function renderHtml (basePath, ramlObj) {
-  const template = path.join(basePath, 'root.nunjucks')
   const env = nunjucks
     .configure(basePath, {autoescape: false})
     .addGlobal('getSafeId', getSafeId)
@@ -106,7 +113,12 @@ function renderHtml (basePath, ramlObj) {
     .addGlobal('hasType', hasType)
     .addGlobal('getType', getType)
   markdown.register(env, marked)
-  return env.render(template, ramlObj)
+
+  if (ramlObj.rootTemplateMarkdown) {
+    return env.renderString(ramlObj.rootTemplateMarkdown, ramlObj)
+  } else {
+    return env.render(path.join(basePath, 'root.nunjucks'), ramlObj);
+  }
 }
 
 /**
@@ -132,11 +144,13 @@ function configureTheme (args) {
   const logoPath = args['logo'] || DEFAULT_LOGO
   const colorThemePath = args['color-theme'] || DEFAULT_COLOR_THEME
   const languageTabs = validateLanguageTabs(args['language-tabs'] || DEFAULT_LANGUAGE_TABS)
+  const rootTemplate = args['root-template']
 
   return {
     colorThemePath,
     languageTabs,
     logoPath,
+    rootTemplate,
     processRamlObj,
     postProcessHtml
   }
