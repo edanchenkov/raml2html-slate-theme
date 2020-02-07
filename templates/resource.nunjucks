@@ -15,14 +15,14 @@
   {% if method.displayName %}
   <h2 id="{{ getSafeId(resource.displayName + '-' + method.displayName) }}">{{ method.displayName }}</h2>
   {% elif resource.displayName %}
-  <h2 id="{{ getSafeId(resource.displayName + '-' + method.method) }}">{{ resource.displayName + " " + method.method }}</h2>
+  <h2 id="{{ getSafeId(resource.displayName + '-' + method.method) }}">{{ method.method | upper }} {{ resource.displayName }}</h2>
   {% else %}
-  <h2 id="{{ getSafeId(resource.parentUrl + resource.relativeUri + method.method) }}">{{ resource.parentUrl }}{{ resource.relativeUri}} {{ method.method }}</h2>
+  <h2 id="{{ getSafeId(resource.parentUrl + resource.relativeUri + method.method) }}">{{ resource.parentUrl }}{{ resource.relativeUri}}</h2>
   {% endif %}
 
-  <p>
+  {#<p>
   <code>{{ (method.method | upper )}}: {{ resource.parentUrl }}{{ resource.relativeUri }}</code> {% if method.securedBy %} <em>(secured)</em>{% endif %}
-  </p>
+  </p>#}
 
   {% markdown -%}
     {{ method.description }}
@@ -79,7 +79,7 @@
   {% if method.displayName %}
   <h2 class="toc-ignore" id="{{ getSafeId(resource.displayName + '-' + method.displayName) }}">{{ method.displayName }}</h2>
   {% elif resource.displayName %}
-  <h2 class="toc-ignore" id="{{ getSafeId(resource.displayName + '-' + method.method) }}">{{ resource.displayName + " " + method.method }}</h2>
+  <h2 class="toc-ignore" id="{{ getSafeId(resource.displayName + '-' + method.method) }}">{{ method.method | upper }} {{ resource.displayName }}</h2>
   {% else %}
   <h2 class="toc-ignore" id="{{ getSafeId(resource.parentUrl + resource.relativeUri + method.method) }}">{{ resource.parentUrl }}{{ resource.relativeUri}} {{ method.method }}</h2>
   {% endif %}
